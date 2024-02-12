@@ -1,8 +1,7 @@
-from math import log10
-
 import sys
 import subprocess
 from curve_calculator import LogarithmicCalc
+from curve_calculator import ExponentialCalc
 
 
 """
@@ -13,10 +12,10 @@ because dbus doesn't need sudo privileges
 
 
 def get_max_brightness():
-    return float(subprocess.check_output(["qdbus",
-                                          "org.kde.Solid.PowerManagement",
-                                          "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
-                                          "org.kde.Solid.PowerManagement.Actions.BrightnessControl.brightnessMax"]))
+    return int(subprocess.check_output(["qdbus",
+                                        "org.kde.Solid.PowerManagement",
+                                        "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
+                                        "org.kde.Solid.PowerManagement.Actions.BrightnessControl.brightnessMax"]))
 
 
 def get_backlight():
@@ -42,8 +41,14 @@ if __name__ == "__main__":
     steps = 20
 
     if len(sys.argv) < 2 or sys.argv[1] not in ["-i", "-d"]:
-        print("usage:\n\t{0} -i / -d".format(sys.argv[0]))
+        print("usage:\n\t{0} -i / -d [method]".format(sys.argv[0]))
+        print("method: optional; values: exp or log")
         sys.exit(0)
+
+    method = sys.argv[2]
+    print("Method: ", method)
+
+    Method = LogarithmicCalc if method == "log" else ExponentialCalc
 
     current_backlight = get_backlight()
 
@@ -51,11 +56,11 @@ if __name__ == "__main__":
     if action == "-i":
         if current_backlight == backlight_max:
             exit(0)
-        new_backlight = LogarithmicCalc.get_new_backlight(current_backlight, backlight_min, backlight_max, steps, True)
+        new_backlight = Method.get_new_backlight(current_backlight, backlight_min, backlight_max, steps, increase=True)
     elif action == "-d":
         if current_backlight == 0 or current_backlight == backlight_min:
             sys.exit(0)
-        new_backlight = LogarithmicCalc.get_new_backlight(current_backlight, backlight_min, backlight_max, steps, False)
+        new_backlight = Method.get_new_backlight(current_backlight, backlight_min, backlight_max, steps, increase=False)
     else:
         print("usage:\n\t{0} -i / -d".format(sys.argv[0]))
         sys.exit(0)
