@@ -4,10 +4,15 @@ import sys
 import subprocess
 
 
-# For KDE and dbus
+"""
+For KDE and DBUS:
+Use of dbus instead of directly use /sys/class/backlight/<dev_name> node 
+because dbus doesn't need sudo privileges
+"""
 
 
 def get_backlight():
+    """Get brightness value with qdbus"""
     return float(subprocess.check_output(["qdbus",
                                           "org.kde.Solid.PowerManagement",
                                           "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
@@ -15,6 +20,7 @@ def get_backlight():
 
 
 def set_backlight(backlight):
+    """Set New Brightness value using dbus-send"""
     value = "int32:%d" % backlight
     subprocess.run(["dbus-send", "--print-reply", "--dest=org.kde.Solid.PowerManagement",
                     "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
