@@ -36,9 +36,7 @@ class LogarithmicCalc(CurveCalc):
             return 1
 
         x = new_step / tot_steps * (x_max - x_min)
-        backlight = round(max(min(10 ** x, max_backlight), min_backlight))
-
-        return backlight
+        return round(max(min(10 ** x, max_backlight), min_backlight))  # New Backlight
 
 
 class ExponentialCalc(CurveCalc):
@@ -52,7 +50,7 @@ class ExponentialCalc(CurveCalc):
         min_es = min_backlight ** esp
         max_es = max_backlight ** esp
 
-        current_step = LogarithmicCalc.calculate_step(cur_backlight, min_es, max_es, tot_steps)
+        current_step = ExponentialCalc.calculate_step(cur_backlight, min_es, max_es, tot_steps, esp)
 
         new_step = current_step + 1 if increase else current_step - 1
         print("Values: ", new_step, current_step, min_backlight, max_backlight, tot_steps)

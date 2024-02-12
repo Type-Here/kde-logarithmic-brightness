@@ -53,7 +53,7 @@ if __name__ == "__main__":
     action = sys.argv[1]
     if action == "-i":
         if current_backlight == backlight_max:
-            exit(0)
+            sys.exit(0)
         new_backlight = Method.get_new_backlight(current_backlight, backlight_min, backlight_max, steps, increase=True)
     elif action == "-d":
         if current_backlight == 0 or current_backlight == backlight_min:
