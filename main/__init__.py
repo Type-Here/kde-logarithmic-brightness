@@ -45,9 +45,7 @@ if __name__ == "__main__":
         print("method: optional; values: exp or log")
         sys.exit(0)
 
-    method = sys.argv[2]
-    print("Method: ", method)
-
+    method = sys.argv[2] if len(sys.argv) == 3 else None
     Method = LogarithmicCalc if method == "log" else ExponentialCalc
 
     current_backlight = get_backlight()
