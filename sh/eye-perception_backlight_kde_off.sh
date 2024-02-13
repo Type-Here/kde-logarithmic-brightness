@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Variables
-save_file="./save.cfg"
+save_file="$(dirname "${0}")/save.cfg"
 increase_val="Monitor Brightness Up,Monitor Brightness Up,Aumenta luminosità dello schermo"
 decrease_val="Monitor Brightness Down,Monitor Brightness Down,Abbassa luminosità dello schermo"
 down_group="python_BrDw.desktop"
 up_group="python_BrUp.desktop"
 desktop_path="${HOME}/.local/share/applications/"
-
 set_default=false
+
 # Show Help Menu
 function show_help(){
     echo -e "\nRestore old Brightness Keys Behaviour"

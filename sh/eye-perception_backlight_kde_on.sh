@@ -10,11 +10,12 @@ function show_help(){
 }
 
 #Main Variables
-save_file="./save.cfg"
+script_dir="$(dirname "${0}")"
+save_file="${script_dir}/save.cfg"
 decrease_key="Decrease Screen Brightness"
 increase_key="Increase Screen Brightness"
 
-py_local_path="$(find .. -name __init__.py)"
+py_local_path="$(find "${script_dir}/.." -name __init__.py)"
 py_abs_path="$(readlink -f "${py_local_path}")"
 down_group="python_BrDw.desktop"
 up_group="python_BrUp.desktop"
@@ -93,7 +94,7 @@ echo -e "\n# Creating .desktop files in ${desktop_path}"
 tee "${desktop_path}${up_group}" > /dev/null <<-EOT
 [Desktop Entry]
 Exec=${python_command_up}
-Name=${python_command_up}
+Name=Screen Brightness Eye-Friendly Up
 NoDisplay=true
 StartupNotify=false
 Type=Application
@@ -103,7 +104,7 @@ EOT
 tee "${desktop_path}${down_group}" > /dev/null <<-EOT
 [Desktop Entry]
 Exec=${python_command_down}
-Name=${python_command_down}
+Name=Screen Brightness Eye-Friendly Down
 NoDisplay=true
 StartupNotify=false
 Type=Application
