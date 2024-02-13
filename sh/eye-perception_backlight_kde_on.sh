@@ -119,6 +119,10 @@ kwriteconfig5 --file kglobalshortcutsrc --group ${up_group} --key _launch "Monit
 kwriteconfig5 --file kglobalshortcutsrc --group ${down_group} --key _k_friendly_name "HumanEye-Friendly Brightness Down"
 kwriteconfig5 --file kglobalshortcutsrc --group ${down_group} --key _launch "Monitor Brightness Down,none,${python_command_down}"
 
-# Reload: in Arch (and maybe other distros) often fails: needed Reboot!
-echo "Reloading Shortcuts..."
-(kquitapp5 kglobalaccel5 && sleep 2s && kglobalaccel5 >/dev/null 2>&1 &) || >&2 echo "Error restarting kglobalaccel5: Try rebooting to update shortcuts"
+# Reload: in Wayland (or some distro specific problem) often fails: needed Reboot!
+if [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
+  echo "Wayland Machine Detected: We'll try to reload shortcuts but you probably need a reboot" >&2
+fi
+
+echo "Reloading Shortcuts... Use CTRL+C if doesn't stop"
+(kquitapp5 kglobalaccel && sleep 2s && kglobalaccel5 >/dev/null 2>&1 &) || >&2 echo "Error restarting kglobalaccel5: Try rebooting to update shortcuts"
