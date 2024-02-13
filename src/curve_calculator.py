@@ -53,8 +53,10 @@ class ExponentialCalc(CurveCalc):
         current_step = ExponentialCalc.calculate_step(cur_backlight, min_es, max_es, tot_steps, esp)
 
         new_step = current_step + 1 if increase else current_step - 1
-        print("Values: ", new_step, current_step, min_backlight, max_backlight, tot_steps)
+        if new_step == 1:
+            return 1
 
+        print("Values: ", new_step, current_step, min_backlight, max_backlight, tot_steps)
         x = new_step / tot_steps * (max_es - min_es)
 
         return round(x ** (1/esp))  # New Backlight
