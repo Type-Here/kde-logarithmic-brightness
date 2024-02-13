@@ -3,6 +3,10 @@ from math import log10
 max_v = 255
 min_v = 0
 steps = 20
+default_esp = 0.4
+
+# Set Your Value HERE: (0 - 1, exclusive)
+custom_value = 0.3
 
 
 def linear_curve(tot_steps: int):
@@ -45,7 +49,9 @@ def logarithmic_curve(tot_steps: int):
 
 print("-- Sim Data for your use case -- \n")
 linear_curve(steps)
-print(" --- ")
-exponential_curve(0.3, steps)
-exponential_curve(0.4, steps)
+print(" --- Default Values --- ")
+exponential_curve(default_esp, steps)
+print(" --- Logarithmic Values --- ")
 logarithmic_curve(steps)
+print(" --- Custom Values --- ")
+exponential_curve(custom_value, steps)
