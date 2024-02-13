@@ -27,7 +27,7 @@ Most of the GPU Drivers have a brightness value settable between 0(off) and 255(
 Using a pure logarithmic curve isn't the best, because, with 20 steps, low values are too near and some steps repeat the same value of brightness, while high values are too far away.  
 Furthermore, it needs extra control for value 0 as log10(0) isn't defined.
 
-I found as a good compromise the use of `y = x<sup>0.4</sup>`  
+I found as a good compromise the use of y = x<sup>0.4</sup>  
   
 ![Exponential vs Logarithmic](./doc/steps_brightness.png "Exp vs Logarithmic")
 
@@ -37,19 +37,19 @@ The value of 0.4 as exponent is a good compromise when:
 - Number of Steps is 20  
 It partially linearizes the values, low steps are decently divided and no values are repeated, as visible in this simulation, available in the code.
 
-'''
-Linear for comparison:
-Values:  [255, 242, 230, 217, 204, 191, 178, 166, 153, 140, 128, 115, 102, 89, 76, 64, 51, 38, 26, 13]
---- Default Values ---
-Exponential factor of 0.40:
-Values:  [255, 224, 196, 170, 146, 124, 105, 87, 71, 57, 45, 35, 26, 18, 13, 8, 5, 2, 1, 0]
---- Logarithmic Values ---
-Logarithmic:
-Values:  [255, 193, 147, 111, 84, 64, 48, 37, 28, 21, 16, 12, 9, 7, 5, 4, 3, 2, 2, 1]
---- Custom Values ---
-Exponential factor of 0.30:
-Values:  [255, 215, 179, 148, 121, 98, 78, 61, 46, 35, 25, 18, 12, 8, 5, 3, 1, 0, 0, 0]
-'''
+```
+Linear for comparison:  
+Values:  [255, 242, 230, 217, 204, 191, 178, 166, 153, 140, 128, 115, 102, 89, 76, 64, 51, 38, 26, 13]  
+--- Default Values ---  
+Exponential factor of 0.40:  
+Values:  [255, 224, 196, 170, 146, 124, 105, 87, 71, 57, 45, 35, 26, 18, 13, 8, 5, 2, 1, 0]  
+--- Logarithmic Values ---  
+Logarithmic:  
+Values:  [255, 193, 147, 111, 84, 64, 48, 37, 28, 21, 16, 12, 9, 7, 5, 4, 3, 2, 2, 1]  
+--- Custom Values ---  
+Exponential factor of 0.30:  
+Values:  [255, 215, 179, 148, 121, 98, 78, 61, 46, 35, 25, 18, 12, 8, 5, 3, 1, 0, 0, 0]  
+```
 
 As shown above, log curve too rapidly decrease and some values are repeated. 
 Repeated values are also in 0.3 curve, available as comparison.
