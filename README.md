@@ -20,10 +20,11 @@ This phenomenon is known as [Weber–Fechner law](https://en.wikipedia.org/wiki/
 In Linux, lots of DE and Drivers manage brightness linearly but it doesn't respect human eye perception.  
 This code is a *WorkAround* to work with Brightness Up and Down Keys available in most of the modern keyboards.  
 
-By default, I chose an exponential function instead, as exponential function with an exponent between 0 and 1 (exclusive)  
-(much like irrational functions, like square root function, that is basically the same as _a<sup>0.5</sup>_)  
-That's because the logarithmic curve is a bit too steep for most uses.  
-Most of the GPU Drivers have a brightness value settable between 0(off) and 255(max), while user can set from 0 to 100 in 20 step (+5 each step) from GUI.   
+By default, I used an exponential function instead, with an exponent between 0 and 1 (exclusive) are essentially irrational functions (like the square root, that is basically the same as _a<sup>0.5</sup>_). 
+  
+That's because the logarithmic curve is a bit too steep for most use cases.  
+Most of the GPU Drivers have a brightness value settable between 0(off) and 255(max), while user can set from 0 to 100 in 20 step (+5 each step) from GUI. 
+  
 Using a pure logarithmic curve isn't the best, because, with 20 steps, low values are too near and some steps repeat the same value of brightness, while high values are too far away.  
 Furthermore, it needs extra control for value 0 as log10(0) isn't defined.
 
