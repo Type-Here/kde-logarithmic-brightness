@@ -8,7 +8,7 @@ This code is for KDE5 User only, should work on Xorg and Wayland(see below for s
 Uses d-bus to retrieve and set values so no sudo privileges are required.
 Python 3.x needed.
 
-Using the exposed node like `/sys/class/backlight/<device>` requires root user instead.
+Using the exposed node like `/sys/class/backlight/<device>` requires root user instead.  
 For user of xbacklight see: [This Link](https://konradstrack.ninja/blog/changing-screen-brightness-in-accordance-with-human-perception/) from konradstrack
 
 ## Why?
@@ -20,7 +20,8 @@ This phenomenon is known as [Weber–Fechner law](https://en.wikipedia.org/wiki/
 In Linux, lots of DE and Drivers manage brightness linearly but it doesn't respect human eye perception.  
 This code is a *WorkAround* to work with Brightness Up and Down Keys available in most of the modern keyboards.  
 
-By default, I used an exponential function instead, with an exponent between 0 and 1 (exclusive) are essentially irrational functions (like the square root, that is basically the same as _a<sup>0.5</sup>_). 
+By default, I used an exponential function instead, with an exponent between 0 and 1 (exclusive).  
+These functions are essentially irrational functions (like the square root, that is basically the same as _a<sup>0.5</sup>_) and have a similar curve to the logarithmic ones for values not too high.
   
 That's because the logarithmic curve is a bit too steep for most use cases.  
 Most of the GPU Drivers have a brightness value settable between 0(off) and 255(max), while user can set from 0 to 100 in 20 step (+5 each step) from GUI. 
