@@ -1,6 +1,6 @@
 # kde-logarithmic-brightness
 
-Set KDE5 to use a logarithmic scale while setting backlight brightness following human eye perception
+Set KDE5 to use a logarithmic scale while setting backlight brightness following human eye perception while using Brightness Up/Down Keys (Function Keys)
 
 ## Prerequisite
 
@@ -68,8 +68,12 @@ Repeated values are also in 0.3 curve, available as comparison.
 
 ## Settings
 
-If you want to try a pure logarithmic function, please remove previous modification by running `./sh/eye-perception_backlight_kde_off.sh`, then run `./sh/eye-perception_backlight_kde_on.sh log` instead.
-If you want change the exponent used to calculate values, add the esp parameter to `get_new_backlight` method call in `__init__.py`
+If you want to try a pure logarithmic function:
+- please remove previous modification by running `./sh/eye-perception_backlight_kde_off.sh`;
+- then run `./sh/eye-perception_backlight_kde_on.sh log` instead.  
+
+If you want change the exponent used to calculate values, add the esp parameter to `get_new_backlight` method call in `__init__.py`.  
+  
 In `__init__.py` is also possible to change: 
 - min_value (default=0) 
 - max_value (default=value in dbus node org.kde.Solid.PowerManagement.Actions.BrightnessControl.brightnessMax, usually is 255) 
