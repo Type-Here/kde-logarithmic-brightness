@@ -1,6 +1,6 @@
 # kde-logarithmic-brightness
 
-Set KDE5 to use a logarithmic scale while setting backlight brightness following human eye perception while using Brightness Up/Down Keys (Function Keys)
+Set KDE Plasma 5 / Plasma 6 to use a logarithmic scale while setting backlight brightness following human eye perception while using Brightness Up/Down Keys (Function Keys)
 
 ## Prerequisite
 
