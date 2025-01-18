@@ -25,14 +25,39 @@ python_command_down="python ${py_abs_path} -d"
 
 # ==== MAIN ====
 
+# Get Plasma version
+echo "Getting Plasma version..."
+
+PLASMA_VERSION=$(plasmashell --version 2>/dev/null | grep -oE '[0-9]+' | head -1)
+
+# Set commands based on version
+if [[ "$PLASMA_VERSION" -ge 6 ]]; then
+    KWRITECONFIG="kwriteconfig6"
+    KREADCONFIG="kreadconfig6"
+    KQUITAPP="kquitapp6"
+    KGLOBALACCEL="kglobalaccel6"
+    python_command_down="${python_command_down} -6"
+    python_command_up="${python_command_up} -6"
+    echo "Plasma 6 detected"
+elif [[ "$PLASMA_VERSION" -eq 5 ]]; then
+    KWRITECONFIG="kwriteconfig5"
+    KREADCONFIG="kreadconfig5"
+    KQUITAPP="kquitapp5"
+    KGLOBALACCEL="kglobalaccel5"
+    echo "Plasma 5 detected"
+else
+    echo "Plasma version non recognized."
+    exit 1
+fi
+
 # --- Menu ---
 if [ $# -eq 0 ]; then
   echo "Setting New Values...";
 elif [ "$1" == "log" ] || [ "$1" == "-l" ]; then
     # Set Logarithmic Mod instead of exponential
     echo "Log Mod is selected, setting parameters"
-    python_command_up="python ${py_abs_path} -i log"
-    python_command_down="python ${py_abs_path} -d log"
+    python_command_up=" ${python_command_up} log"
+    python_command_down="${python_command_down} log"
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     show_help;
     exit 0;
@@ -42,23 +67,10 @@ else
     exit 0;
 fi
 
-# Check for KDE and Plasma 5
-cur_desktop="${XDG_CURRENT_DESKTOP}"
-plasma_ver="$(plasmashell --version)"
-
-if [[ "${cur_desktop}" != "KDE" ]]; then
-  echo "This Machine doesn't run KDE. Exiting...";
-  exit 0;
-elif [[ "${plasma_ver}" =~ ^[^plasmashell\ 5\.*] ]]; then
-  echo "This Machine doesn't run KDE Version 5.x, exiting..."
-  exit 0;
-else
-  echo "Compatible KDE version found. Starting:"
-fi
 
 # Read Old Values
-default_decrease="$(kreadconfig5 --file kglobalshortcutsrc --group org_kde_powerdevil --key "${decrease_key}")"
-default_increase="$(kreadconfig5 --file kglobalshortcutsrc --group org_kde_powerdevil --key "${increase_key}")"
+default_decrease="$($KREADCONFIG --file kglobalshortcutsrc --group org_kde_powerdevil --key "${decrease_key}")"
+default_increase="$($KREADCONFIG --file kglobalshortcutsrc --group org_kde_powerdevil --key "${increase_key}")"
 
 echo "Default/Old Increase Value: ${default_increase}"
 echo "Default/Old Decrease Value: ${default_decrease}"
@@ -81,8 +93,8 @@ echo "Setting new Shortcut..."
 
 # Remove Old/Default Values
 echo "Removing Old Values..."
-kwriteconfig5 --file kglobalshortcutsrc --group org_kde_powerdevil --key "Decrease Screen Brightness" "none,Monitor Brightness Down,Abbassa luminosità dello schermo"
-kwriteconfig5 --file kglobalshortcutsrc --group org_kde_powerdevil --key "Increase Screen Brightness" "none,Monitor Brightness Up,Aumenta luminosità dello schermo"
+$KWRITECONFIG --file kglobalshortcutsrc --group org_kde_powerdevil --key "Decrease Screen Brightness" "none,Monitor Brightness Down,Abbassa luminosità dello schermo"
+$KWRITECONFIG --file kglobalshortcutsrc --group org_kde_powerdevil --key "Increase Screen Brightness" "none,Monitor Brightness Up,Aumenta luminosità dello schermo"
 
 # Instantiating New Shortcuts
 echo "Writing New Shortcuts..."
@@ -113,11 +125,11 @@ EOT
 
 # Setting Entries in '$HOME/.config/kglobalshortcutsrc' file
 
-kwriteconfig5 --file kglobalshortcutsrc --group ${up_group} --key _k_friendly_name "HumanEye-Friendly Brightness Up"
-kwriteconfig5 --file kglobalshortcutsrc --group ${up_group} --key _launch "Monitor Brightness Up,none,${python_command_up}"
+$KWRITECONFIG --file kglobalshortcutsrc --group ${up_group} --key _k_friendly_name "HumanEye-Friendly Brightness Up"
+$KWRITECONFIG --file kglobalshortcutsrc --group ${up_group} --key _launch "Monitor Brightness Up,none,${python_command_up}"
 
-kwriteconfig5 --file kglobalshortcutsrc --group ${down_group} --key _k_friendly_name "HumanEye-Friendly Brightness Down"
-kwriteconfig5 --file kglobalshortcutsrc --group ${down_group} --key _launch "Monitor Brightness Down,none,${python_command_down}"
+$KWRITECONFIG --file kglobalshortcutsrc --group ${down_group} --key _k_friendly_name "HumanEye-Friendly Brightness Down"
+$KWRITECONFIG --file kglobalshortcutsrc --group ${down_group} --key _launch "Monitor Brightness Down,none,${python_command_down}"
 
 # Reload: in Wayland (or some distro specific problem) often fails: needed Reboot!
 if [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
@@ -125,4 +137,4 @@ if [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
 fi
 
 echo "Reloading Shortcuts... Use CTRL+C if doesn't stop"
-(kquitapp5 kglobalaccel && sleep 2s && kglobalaccel5 >/dev/null 2>&1 &) || >&2 echo "Error restarting kglobalaccel5: Try rebooting to update shortcuts"
+($KQUITAPP kglobalaccel && sleep 2s && $KGLOBALACCEL >/dev/null 2>&1 &) || >&2 echo "Error restarting kglobalaccel: Try rebooting to update shortcuts"
