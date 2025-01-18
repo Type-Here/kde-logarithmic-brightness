@@ -18,6 +18,29 @@ function show_help(){
     echo ""
 }
 
+echo "Getting Plasma version..."
+
+PLASMA_VERSION=$(plasmashell --version 2>/dev/null | grep -oE '[0-9]+' | head -1)
+
+# Set commands based on version
+if [[ "$PLASMA_VERSION" -ge 6 ]]; then
+    KWRITECONFIG="kwriteconfig6"
+    KREADCONFIG="kreadconfig6"
+    KQUITAPP="kquitapp6"
+    KGLOBALACCEL="kglobalaccel6"
+    python_command_down="${python_command_down} -6"
+    python_command_up="${python_command_up} -6"
+    
+elif [[ "$PLASMA_VERSION" -eq 5 ]]; then
+    KWRITECONFIG="kwriteconfig5"
+    KREADCONFIG="kreadconfig5"
+    KQUITAPP="kquitapp5"
+    KGLOBALACCEL="kglobalaccel5"
+else
+    echo "Plasma version non recognized."
+    exit 1
+fi
+
 
 # ======= MAIN =========
 
@@ -35,19 +58,6 @@ else
     exit 0;
 fi
 
-# Check for KDE and Plasma 5
-cur_desktop="${XDG_CURRENT_DESKTOP}"
-plasma_ver="$(plasmashell --version)"
-
-if [[ "${cur_desktop}" != "KDE" ]]; then
-  echo "This Machine doesn't run KDE. Exiting...";
-  exit 0;
-elif [[ "${plasma_ver}" =~ ^[^plasmashell\ 5\.*] ]]; then
-  echo "This Machine doesn't run KDE Version 5.x, exiting..."
-  exit 0;
-else
-  echo "Compatible KDE version found. Starting:"
-fi
 
 # Check if load old data from save file 'save.cfg' or using default set above
 if [[ "${set_default}" == true ]]; then
@@ -71,22 +81,22 @@ echo "Inc: ${increase_val}"
 # Operating
 
 echo "Removing Custom Values..."
-kwriteconfig5 --file kglobalshortcutsrc --group ${up_group} --key _k_friendly_name --delete
-kwriteconfig5 --file kglobalshortcutsrc --group ${up_group} --key _launch --delete
+$KWRITECONFIG --file kglobalshortcutsrc --group ${up_group} --key _k_friendly_name --delete
+$KWRITECONFIG --file kglobalshortcutsrc --group ${up_group} --key _launch --delete
 
-kwriteconfig5 --file kglobalshortcutsrc --group ${down_group} --key _k_friendly_name --delete
-kwriteconfig5 --file kglobalshortcutsrc --group ${down_group} --key _launch --delete
+$KWRITECONFIG --file kglobalshortcutsrc --group ${down_group} --key _k_friendly_name --delete
+$KWRITECONFIG --file kglobalshortcutsrc --group ${down_group} --key _launch --delete
 
 rm "${desktop_path}${up_group}"
 rm "${desktop_path}${down_group}"
 
 echo "Add Old/Default Values..."
-kwriteconfig5 --file kglobalshortcutsrc --group org_kde_powerdevil --key "Decrease Screen Brightness" "${decrease_val}"
-kwriteconfig5 --file kglobalshortcutsrc --group org_kde_powerdevil --key "Increase Screen Brightness" "${increase_val}"
+$KWRITECONFIG --file kglobalshortcutsrc --group org_kde_powerdevil --key "Decrease Screen Brightness" "${decrease_val}"
+$KWRITECONFIG --file kglobalshortcutsrc --group org_kde_powerdevil --key "Increase Screen Brightness" "${increase_val}"
 
 # Reload: in Arch (and maybe other distros) often fails: needed Reboot!
 if [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
   echo "Wayland Machine Detected: We'll try to reload shortcuts but you probably need a reboot" >&2
 fi
 echo "Reloading Shortcuts... Use CTRL+C if doesn't stop"
-(kquitapp5 kglobalaccel && sleep 2s && kglobalaccel5 >/dev/null 2>&1 &) || >&2 echo "Error restarting kglobalaccel5: Try rebooting to update shortcuts"
+($KQUITAPP kglobalaccel && sleep 2s && $KGLOBALACCEL >/dev/null 2>&1 &) || >&2 echo "Error restarting kglobalaccel: Try rebooting to update shortcuts"
